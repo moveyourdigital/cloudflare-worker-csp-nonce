@@ -43,7 +43,7 @@ Worker -> Cloudflare -> Response
 HTTP 200 OK
 Content-Type: text/html
 Content-Security-Policy: default-src 'none'; script-src 'self' 'nonce-DhcnhD3khTMePgXw' 'strict-dynamic';
-Cache-Control: no-store
+Cache-Control: no-cache, max-age=0
 
 <html>
 <head>
@@ -72,9 +72,7 @@ Cache-Control: no-cache, max-age=0
 </html>
 ```
 
-Notice two changes:
-- The default `nonce` string is replaced by a randomly generated one
-- `Cache-Control` directive was `no-store` and replaced by `no-cache, max-age=0` (can be changed by tweaking `DEFAULT_CACHE_CONTROL` constant)
+Notice the change of default `nonce` string which is replaced by a randomly generated one.
 
 ### Known issues and troubleshooting
 
@@ -87,7 +85,7 @@ We're working on a solution to overcome this issue.
 ### Considerations
 
 #### Do not send `Content-Security-Policy` in `304 Not Modified` responses
-This script removes `Content-Security-Policy*` headers from the response if origin responds with a `304`. This way we tell browsers to reuse the previously generated nonce. Since the nonce is private and not deterministic, no external scripts can access it and no body is modified, it's safe to reuse it during subsequente requests as browsers will use stale content.
+This script removes `Content-Security-Policy*` headers from the response if origin responds with a `304`. This way we tell browsers to reuse the previously generated nonce. Since the nonce is private and not deterministic, no external scripts can access it and no body is modified, it's safe to reuse it during subsequent requests as browsers will use stale content.
 
 #### Limits of Workers free plan
 
