@@ -89,6 +89,15 @@ A different approach would be to inject the nonce in the cookie, which still car
 
 However, if you find youself solving this issue, please consider to open a pull request here or simply let us know :-)
 
+#### Rocket Loader®
+
+The new [Cloudflare Rocket Loader®](https://blog.cloudflare.com/we-have-lift-off-rocket-loader-ga-is-mobile/) feature injects/replaces itself with a different script. Since we can't whitelist domains using `strict-dynamic` Google Chrome blocks this request and we were unable to find the reason. Sadly, we had to disable Rocket Loader for these websites.
+
+We're working on a solution to overcome this issue.
+
+
+### Considerations
+
 #### Limits of Workers free plan
 
 As the time of this writing, the limit is 100k/mo. However this can change. If you need more, consider using a paying plan which in fact is very cheap.
