@@ -78,25 +78,16 @@ Notice two changes:
 
 ### Known issues and troubleshooting
 
-#### Never use `304 Not Modified` responses
-Unfortunately, one downside of this technique is that you can't respond with 304 code since the nonce must be always regenerated and match both HTTP header and body response.
-
-However, you can cache on browser and change `max-age` directive to something abover 0.
-
-If you absolutely need to respond with `304` you'll need to maintain status within this script. You could use [Cloudflare KV](https://developers.cloudflare.com/workers/reference/apis/kv/) that saves a pair of `__cfduid` cookie value and the generated nonce.
-
-A different approach would be to inject the nonce in the cookie, which still cares proper security validations and we don't recommed it yet.
-
-However, if you find youself solving this issue, please consider to open a pull request here or simply let us know :-)
-
 #### Rocket Loader®
 
 The new [Cloudflare Rocket Loader®](https://blog.cloudflare.com/we-have-lift-off-rocket-loader-ga-is-mobile/) feature injects/replaces itself with a different script. Since we can't whitelist domains using `strict-dynamic` Google Chrome blocks this request and we were unable to find the reason. Sadly, we had to disable Rocket Loader for these websites.
 
 We're working on a solution to overcome this issue.
 
-
 ### Considerations
+
+#### Do not send `Content-Security-Policy` in `304 Not Modified` responses
+This script removes `Content-Security-Policy*` headers from the response if origin responds with a `304`. This way we tell browsers to reuse the previously generated nonce. Since the nonce is private and not deterministic, no external scripts can access it and no body is modified, it's safe to reuse it during subsequente requests as browsers will use stale content.
 
 #### Limits of Workers free plan
 

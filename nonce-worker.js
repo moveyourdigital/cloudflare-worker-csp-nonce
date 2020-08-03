@@ -1,5 +1,3 @@
-const DEFAULT_CACHE_CONTROL = "no-cache, max-age=0";
-
 addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event.request));
 });
@@ -59,13 +57,12 @@ async function handleRequest(request) {
         "content-security-policy-report-only",
       ].includes(header)
     ) {
+      // Reuse previously sent Content-Security-Policy
+      if (originresponse.status === 304) continue
       value = value.replace(/DhcnhD3khTMePgXw/gi, nonce);
     }
     clientresponse.headers.set(header, value);
     clientresponse.headers.set("cf-nonce-generator", "HIT");
-
-    // For CSP to work properly, we need to tweak cache-control
-    clientresponse.headers.set("cache-control", DEFAULT_CACHE_CONTROL);
   }
 
   return clientresponse;
